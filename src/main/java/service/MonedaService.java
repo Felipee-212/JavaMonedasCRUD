@@ -31,7 +31,12 @@ public class MonedaService {
         monedaRepo.findById(id).ifPresent(monedaRepo::delete);
     }
 
+    //modificar moneda
+    public Moneda modificarMoneda(Moneda moneda,long id) {
+        moneda.setId(id);
+        return monedaRepo.save(moneda);
 
+    }
 
 
 
