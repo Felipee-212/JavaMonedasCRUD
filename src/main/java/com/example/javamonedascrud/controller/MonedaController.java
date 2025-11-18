@@ -1,9 +1,8 @@
-package controller;
+package com.example.javamonedascrud.controller;
 
-import model.Moneda;
-import org.springframework.stereotype.Controller;
+import com.example.javamonedascrud.model.Moneda;
 import org.springframework.web.bind.annotation.*;
-import service.MonedaService;
+import com.example.javamonedascrud.service.MonedaService;
 
 import java.util.List;
 
