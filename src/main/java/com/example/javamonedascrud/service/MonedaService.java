@@ -1,8 +1,8 @@
-package service;
+package com.example.javamonedascrud.service;
 
-import model.Moneda;
+import com.example.javamonedascrud.model.Moneda;
 import org.springframework.stereotype.Service;
-import repository.MonedaRepo;
+import com.example.javamonedascrud.repository.MonedaRepo;
 
 import java.util.List;
 
@@ -37,7 +37,5 @@ public class MonedaService {
         return monedaRepo.save(moneda);
 
     }
-
-
 
 }
