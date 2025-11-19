@@ -1,470 +1,185 @@
 <!DOCTYPE html>
 <html lang="es">
-<!-- frontend temporal  -->
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Monedas</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background: #f5f5f5;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 30px auto;
-            background: #ffffff;
-            padding: 20px 25px 30px 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        h1 {
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-        }
-
-        form {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px 16px;
-            margin-bottom: 20px;
-            background: #fafafa;
-            padding: 16px;
-            border-radius: 6px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 4px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="date"] {
-            padding: 7px 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-size: 0.9rem;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #1976d2;
-            box-shadow: 0 0 0 1px rgba(25,118,210,0.25);
-        }
-
-        .form-actions {
-            grid-column: 1 / -1;
-            margin-top: 4px;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        button {
-            border: none;
-            border-radius: 4px;
-            padding: 8px 14px;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: #1976d2;
-            color: #fff;
-        }
-
-        .btn-secondary {
-            background: #9e9e9e;
-            color: #fff;
-        }
-
-        .btn-danger {
-            background: #d32f2f;
-            color: #fff;
-        }
-
-        .btn-small {
-            padding: 4px 8px;
-            font-size: 0.8rem;
-            margin-right: 4px;
-        }
-
-        .status {
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-            color: #555;
-            min-height: 18px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-        }
-
-        th, td {
-            border-bottom: 1px solid #e0e0e0;
-            padding: 8px 6px;
-            text-align: left;
-            font-size: 0.9rem;
-        }
-
-        th {
-            background: #f0f0f0;
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background: #fafafa;
-        }
-
-        .tag-edit {
-            font-size: 0.8rem;
-            color: #1976d2;
-            font-weight: 600;
-        }
-
-        @media (max-width: 800px) {
-            form {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                margin: 0;
-                border-radius: 0;
-                box-shadow: none;
-            }
-            form {
-                grid-template-columns: 1fr;
-            }
-            table {
-                font-size: 0.8rem;
-            }
-            th, td {
-                padding: 6px 4px;
-            }
-        }
-    </style>
+    <title>Monedas CRUD Simple</title>
 </head>
 <body>
 
-<div class="container">
-    <h1>Gestión de Monedas</h1>
-    <div class="subtitle">
-        CRUD simple consumiendo la API de Spring Boot en <code>/monedas</code>.
-    </div>
+<h2>Monedas</h2>
 
-    <!-- ESTADO / MENSAJES -->
-    <div id="status" class="status"></div>
+<button onclick="mostrarAgregar()">Agregar moneda</button>
 
-    <!-- FORMULARIO -->
-    <form id="monedaForm">
-        <input type="hidden" id="id">
+<!-- form  -->
+<div id="formDiv" style="margin-top:10px; display:none;">
+    <input id="id" type="hidden">
 
-        <div class="form-group">
-            <label for="fechaRegistro">Fecha de registro</label>
-            <input type="date" id="fechaRegistro" required>
-        </div>
 
-        <div class="form-group">
-            <label for="pais">País</label>
-            <input type="text" id="pais" required>
-        </div>
+    Fecha: <input id="fecha"><br>
+    País: <input id="pais"><br>
+    Año: <input id="anio"><br>
+    Nominal: <input id="nominal"><br>
+    Compra: <input id="compra"><br>
+    Mercado: <input id="mercado"><br>
 
-        <div class="form-group">
-            <label for="anioDePublicacion">Año de acuñación</label>
-            <input type="number" id="anioDePublicacion" required>
-        </div>
-
-        <div class="form-group">
-            <label for="valorNominal">Valor nominal</label>
-            <input type="text" id="valorNominal" required>
-        </div>
-
-        <div class="form-group">
-            <label for="precioCompra">Precio compra (USD)</label>
-            <input type="number" step="0.01" id="precioCompra" required>
-        </div>
-
-        <div class="form-group">
-            <label for="valorMercado">Valor mercado (USD)</label>
-            <input type="number" step="0.01" id="valorMercado" required>
-        </div>
-
-        <div class="form-actions">
-            <span id="editTag" class="tag-edit" style="display:none;">Editando registro</span>
-            <button type="button" class="btn-secondary" id="cancelEdit" style="display:none;">Cancelar edición</button>
-            <button type="submit" class="btn-primary" id="submitButton">Guardar</button>
-        </div>
-    </form>
-
-    <!-- TABLA -->
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Fecha</th>
-            <th>País</th>
-            <th>Año</th>
-            <th>Valor nominal</th>
-            <th>Compra (USD)</th>
-            <th>Mercado (USD)</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody id="monedasTableBody">
-        <!-- filas generadas por JS -->
-        </tbody>
-    </table>
+    <button onclick="guardar()">Guardar</button>
+    <button onclick="cancelar()">Cancelar</button>
 </div>
 
+<!-- tabla -->
+<table border="1" style="margin-top:20px;">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Fecha</th>
+        <th>País</th>
+        <th>Año</th>
+        <th>Nominal</th>
+        <th>Compra</th>
+        <th>Mercado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+</table>
+
 <script>
-    const API_BASE = "http://localhost:8080/monedas";
+    const API = "http://localhost:8080/monedas";
 
-    const statusDiv = document.getElementById("status");
-    const form = document.getElementById("monedaForm");
+    // agarro referencias para no repetir document.getElement
+    const f = document.getElementById("fecha");
+    const p = document.getElementById("pais");
+    const a = document.getElementById("anio");
+    const n = document.getElementById("nominal");
+    const c = document.getElementById("compra");
+    const m = document.getElementById("mercado");
+    const formDiv = document.getElementById("formDiv");
+    const idInput = document.getElementById("id");
+    const tbody = document.getElementById("tbody");
 
-    const inputId = document.getElementById("id");
-    const inputFechaRegistro = document.getElementById("fechaRegistro");
-    const inputPais = document.getElementById("pais");
-    const inputAnio = document.getElementById("anioDePublicacion");
-    const inputValorNominal = document.getElementById("valorNominal");
-    const inputPrecioCompra = document.getElementById("precioCompra");
-    const inputValorMercado = document.getElementById("valorMercado");
+    // acá guardo si estoy editando o no
+    let editId = null;
 
-    const editTag = document.getElementById("editTag");
-    const cancelEditBtn = document.getElementById("cancelEdit");
-    const submitButton = document.getElementById("submitButton");
-
-    const tbody = document.getElementById("monedasTableBody");
-
-    let monedasCache = [];
-
-    function setStatus(message, isError = false) {
-        statusDiv.textContent = message || "";
-        statusDiv.style.color = isError ? "#d32f2f" : "#555";
+    // limpia el form siempre que entro a agregar
+    function limpiarFormulario() {
+        idInput.value = "";
+        f.value = "";
+        p.value = "";
+        a.value = "";
+        n.value = "";
+        c.value = "";
+        m.value = "";
     }
 
-    async function cargarMonedas() {
-        try {
-            setStatus("Cargando monedas...");
-            const resp = await fetch(API_BASE + "/listar");
-            if (!resp.ok) {
-                throw new Error("Error al obtener monedas");
-            }
-            const data = await resp.json();
-            monedasCache = data;
-            renderTabla();
-            setStatus("Monedas cargadas: " + data.length);
-        } catch (e) {
-            setStatus(e.message, true);
-            console.error(e);
-        }
+    // muestro el form para agregar una moneda nueva
+    function mostrarAgregar(){
+        limpiarFormulario();
+        formDiv.style.display = "block";
+        editId = null;        // indico que no estoy editando
     }
 
-    function renderTabla() {
+    // ocultar form sin guardar
+    function cancelar(){
+        limpiarFormulario();
+        formDiv.style.display = "none";
+        editId = null;
+    }
+
+    // cargo las monedas cuando arranca
+    async function cargar(){
+        const resp = await fetch(API + "/listar");
+        const data = await resp.json();
+        renderTabla(data);
+    }
+
+    // render de la tabla
+    function renderTabla(monedas){
         tbody.innerHTML = "";
-        if (!monedasCache || monedasCache.length === 0) {
-            const row = document.createElement("tr");
-            const cell = document.createElement("td");
-            cell.colSpan = 8;
-            cell.textContent = "No hay monedas registradas.";
-            tbody.appendChild(row);
-            row.appendChild(cell);
-            return;
-        }
 
-        monedasCache.forEach(m => {
-            const row = document.createElement("tr");
+        monedas.forEach(mo => {
+            const tr = document.createElement("tr");
 
-            const cId = document.createElement("td");
-            cId.textContent = m.id;
+            tr.innerHTML = `
+            <td>${mo.id}</td>
+            <td>${(mo.fechaRegistro || "").substring(0,10)}</td>
+            <td>${mo.pais}</td>
+            <td>${mo.anioDePublicacion}</td>
+            <td>${mo.valorNominal}</td>
+            <td>${mo.precioCompra}</td>
+            <td>${mo.valorMercado}</td>
+            <td>
+                <button onclick="editar(${mo.id})">Editar</button>
+                <button onclick="eliminar(${mo.id})">Eliminar</button>
+            </td>
+        `;
 
-            const cFecha = document.createElement("td");
-            cFecha.textContent = m.fechaRegistro ? m.fechaRegistro.substring(0, 10) : "";
-
-            const cPais = document.createElement("td");
-            cPais.textContent = m.pais;
-
-            const cAnio = document.createElement("td");
-            cAnio.textContent = m.anioDePublicacion;
-
-            const cValorNominal = document.createElement("td");
-            cValorNominal.textContent = m.valorNominal;
-
-            const cCompra = document.createElement("td");
-            cCompra.textContent = m.precioCompra;
-
-            const cMercado = document.createElement("td");
-            cMercado.textContent = m.valorMercado;
-
-            const cAcciones = document.createElement("td");
-
-            const btnEditar = document.createElement("button");
-            btnEditar.textContent = "Editar";
-            btnEditar.className = "btn-small btn-primary";
-            btnEditar.onclick = () => editarMoneda(m.id);
-
-            const btnEliminar = document.createElement("button");
-            btnEliminar.textContent = "Eliminar";
-            btnEliminar.className = "btn-small btn-danger";
-            btnEliminar.onclick = () => eliminarMoneda(m.id);
-
-            cAcciones.appendChild(btnEditar);
-            cAcciones.appendChild(btnEliminar);
-
-            row.appendChild(cId);
-            row.appendChild(cFecha);
-            row.appendChild(cPais);
-            row.appendChild(cAnio);
-            row.appendChild(cValorNominal);
-            row.appendChild(cCompra);
-            row.appendChild(cMercado);
-            row.appendChild(cAcciones);
-
-            tbody.appendChild(row);
+            tbody.appendChild(tr);
         });
     }
 
-    function resetForm() {
-        inputId.value = "";
-        inputFechaRegistro.value = "";
-        inputPais.value = "";
-        inputAnio.value = "";
-        inputValorNominal.value = "";
-        inputPrecioCompra.value = "";
-        inputValorMercado.value = "";
-        editTag.style.display = "none";
-        cancelEditBtn.style.display = "none";
-        submitButton.textContent = "Guardar";
+    // cuando toco editar, lleno el form con los datos
+    async function editar(id){
+        const resp = await fetch(API + "/listar");
+        const arr = await resp.json();
+        const mo = arr.find(x => x.id === id);
+
+        if (!mo) return;
+
+        // pongo los datos en el form
+        idInput.value = mo.id;
+        f.value = mo.fechaRegistro ? mo.fechaRegistro.substring(0,10) : "";
+        p.value = mo.pais;
+        a.value = mo.anioDePublicacion;
+        n.value = mo.valorNominal;
+        c.value = mo.precioCompra;
+        m.value = mo.valorMercado;
+
+        // muestro el form
+        formDiv.style.display = "block";
+        editId = id;
     }
 
-    async function guardarMoneda(event) {
-        event.preventDefault();
-
-        const id = inputId.value;
-
-        const moneda = {
-            fechaRegistro: inputFechaRegistro.value,
-            pais: inputPais.value,
-            anioDePublicacion: parseInt(inputAnio.value, 10),
-            valorNominal: inputValorNominal.value,
-            precioCompra: parseFloat(inputPrecioCompra.value),
-            valorMercado: parseFloat(inputValorMercado.value)
+    // guardar → o POST o PUT según editId
+    async function guardar(){
+        const obj = {
+            fechaRegistro: f.value,
+            pais: p.value,
+            anioDePublicacion: parseInt(a.value),
+            valorNominal: n.value,
+            precioCompra: parseFloat(c.value),
+            valorMercado: parseFloat(m.value)
         };
 
-        try {
-            if (!id) {
-                setStatus("Guardando nueva moneda...");
-                const resp = await fetch(API_BASE + "/agregar", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(moneda)
-                });
-                if (!resp.ok) {
-                    throw new Error("Error al guardar moneda");
-                }
-            } else {
-                setStatus("Actualizando moneda ID " + id + "...");
-                const resp = await fetch(API_BASE + "/modificar/" + id, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(moneda)
-                });
-                if (!resp.ok) {
-                    throw new Error("Error al actualizar moneda");
-                }
-            }
-
-            resetForm();
-            await cargarMonedas();
-            setStatus("Operación realizada correctamente.");
-        } catch (e) {
-            setStatus(e.message, true);
-            console.error(e);
-        }
-    }
-
-    function editarMoneda(id) {
-        const moneda = monedasCache.find(m => m.id === id);
-        if (!moneda) {
-            setStatus("No se encontró la moneda con ID " + id, true);
-            return;
-        }
-
-        inputId.value = moneda.id;
-
-        if (moneda.fechaRegistro) {
-            inputFechaRegistro.value = moneda.fechaRegistro.substring(0, 10);
-        } else {
-            inputFechaRegistro.value = "";
-        }
-
-        inputPais.value = moneda.pais || "";
-        inputAnio.value = moneda.anioDePublicacion || "";
-        inputValorNominal.value = moneda.valorNominal || "";
-        inputPrecioCompra.value = moneda.precioCompra || "";
-        inputValorMercado.value = moneda.valorMercado || "";
-
-        editTag.style.display = "inline-block";
-        cancelEditBtn.style.display = "inline-block";
-        submitButton.textContent = "Actualizar";
-        setStatus("Editando moneda ID " + id);
-    }
-
-    async function eliminarMoneda(id) {
-        const confirmar = confirm("¿Seguro que deseas eliminar la moneda con ID " + id + "?");
-        if (!confirmar) return;
-
-        try {
-            setStatus("Eliminando moneda ID " + id + "...");
-            // Ojo: el endpoint en tu controller se llama "/elminiar/{id}" con la palabra mal escrita.
-            const resp = await fetch(API_BASE + "/elminiar/" + id, {
-                method: "DELETE"
+        if (!editId){
+            // crear moneda nueva
+            await fetch(API + "/agregar", {
+                method:"POST",
+                headers:{ "Content-Type":"application/json" },
+                body: JSON.stringify(obj)
             });
-            if (!resp.ok) {
-                throw new Error("Error al eliminar moneda");
-            }
-            await cargarMonedas();
-            setStatus("Moneda eliminada.");
-        } catch (e) {
-            setStatus(e.message, true);
-            console.error(e);
+        } else {
+            // actualizar existente
+            await fetch(API + "/modificar/" + editId, {
+                method:"PUT",
+                headers:{ "Content-Type":"application/json" },
+                body: JSON.stringify(obj)
+            });
         }
+
+        limpiarFormulario();
+        formDiv.style.display = "none";
+        editId = null;
+
+        cargar();
     }
 
-    cancelEditBtn.addEventListener("click", function () {
-        resetForm();
-        setStatus("Edición cancelada.");
-    });
+    // eliminar una moneda
+    async function eliminar(id){
+        await fetch(API + "/elminiar/" + id, { method:"DELETE" });
+        cargar();
+    }
 
-    form.addEventListener("submit", guardarMoneda);
-
-    document.addEventListener("DOMContentLoaded", cargarMonedas);
+    cargar(); // arranca la app
 </script>
 
 </body>
