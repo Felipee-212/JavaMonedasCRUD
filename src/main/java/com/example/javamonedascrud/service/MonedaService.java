@@ -3,7 +3,6 @@ package com.example.javamonedascrud.service;
 import com.example.javamonedascrud.model.Moneda;
 import org.springframework.stereotype.Service;
 import com.example.javamonedascrud.repository.MonedaRepo;
-
 import java.util.List;
 
 @Service
@@ -37,5 +36,4 @@ public class MonedaService {
         return monedaRepo.save(moneda);
 
     }
-
 }

@@ -26,12 +26,4 @@ public class Moneda {
     private double precioCompra;
     private double valorMercado;
 
-
-
-
-
-
-
-
-
 }
